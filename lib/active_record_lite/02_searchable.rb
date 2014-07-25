@@ -3,20 +3,15 @@ require_relative '01_sql_object'
 
 module Searchable
   def where(params)
-    where_line = params.map do |attr_name, value|
-      "#{attr_name} = ?"
-    end.join ' AND '
+    Relation.new(:where, self, params)
+  end
 
-    results = DBConnection.execute(<<-SQL, *params.values)
-      SELECT
-        *
-      FROM
-        #{self.table_name}
-      WHERE
-        #{where_line}
-    SQL
+  def includes(other_table)
+    Relation.new(:include, self, other_table)
+  end
 
-    results.map { |hash| self.new(hash) }
+  def joins(relation)
+
   end
 end
 
