@@ -14,11 +14,9 @@ class SQLObject
   end
 
   def self.finalize!
-    define_method(:attributes) { @attributes ||= Hash.new }
-
     self.columns.each do |column|
       define_method(column) { attributes[column] }
-      define_method("#{column}=".to_sym) do |arg|
+      define_method("#{column}=") do |arg|
         attributes[column] = arg
       end
     end
@@ -79,15 +77,19 @@ class SQLObject
   end
 
   def initialize(params = {})
+    @attributes = {}
+
     params.each do |attr_name, value|
       attr_sym = attr_name.to_sym
 
-      unless self.class::columns.include? attr_sym
+      unless self.class.columns.include? attr_sym
         raise "unknown attribute '#{attr_name}'"
       end
 
       attributes[attr_sym] = value
     end
+
+    self.class.finalize!
   end
 
   def save
@@ -108,6 +110,10 @@ class SQLObject
         id = ?
     SQL
 
+  end
+
+  def attributes
+    @attributes
   end
 
   def attribute_values
