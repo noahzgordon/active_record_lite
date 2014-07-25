@@ -1,16 +1,8 @@
 class Relation
-  def initialize(method_call, class_type, params = {})
+  def initialize(class_type)
     @class = class_type
     @conditions = {}
     @joined_relations = []
-
-    if method_call = :where
-      self.where(params)
-    elsif method_call = :include
-      self.include(params)
-    elsif method_call = :join
-      @join_tables << table
-    end
   end
 
   def inspect
@@ -23,11 +15,11 @@ class Relation
     end
   end
 
-  def includes(relation) # include other relation also??
+  def includes(other_relation)
     @included_relations << relation
   end
 
-  def joins(relation) # join to other relation also??
+  def joins(relation)
     @joined_relations << relation
   end
 

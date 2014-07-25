@@ -3,15 +3,21 @@ require_relative '01_sql_object'
 
 module Searchable
   def where(params)
-    Relation.new(:where, self, params)
+    relation = Relation.new(self)
+    relation.where(params)
+    relation
   end
 
-  def includes(other_table)
-    Relation.new(:include, self, other_table)
+  def includes(other_relation)
+    relation = Relation.new(self)
+    relation.includes(other_relation)
+    relation
   end
 
-  def joins(relation)
-
+  def joins(other_relation)
+    relation = Relation.new(self)
+    relation.where(other_relation)
+    relation
   end
 end
 
